@@ -28,6 +28,16 @@ void print_list(Node * p)
     cout << endl;
 }
 
+void release_list(Node *p) 
+{
+    Node *tmp;
+    while(p) {
+        tmp = p->next; 
+        delete p; 
+        p = tmp;
+    }
+}
+
 int main()
 {
     string number;
@@ -88,5 +98,6 @@ int main()
     }
     
     print_list(head);
+    release_list(head);
     return 0;
 }
