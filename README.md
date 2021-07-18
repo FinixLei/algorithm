@@ -69,7 +69,6 @@ It just tries to collect the typical algorithm problems.
 ├── 11_Sort
 │   ├── bubble_sort.cpp
 │   ├── heap_sort.cpp
-│   ├── merge.cpp
 │   ├── merge_sort.cpp
 │   └── normal_quick_sort.cpp
 ├── 12_Recursive
@@ -78,6 +77,7 @@ It just tries to collect the typical algorithm problems.
 │   ├── convert_string.cpp
 │   └── queens.cpp
 ├── 14_DP
+│   └── word_edit_distance.cpp
 ├── 15_Permutation
 │   ├── allow_duplicatedl_list_all.cpp
 │   ├── classic_list_all.cpp
@@ -87,7 +87,7 @@ It just tries to collect the typical algorithm problems.
 │   │   ├── bag.cpp
 │   │   └── greedy.cpp
 │   └── sqrt.cpp
-└── README.rst
+└── README.md
 
 10 directories, 21 files
 

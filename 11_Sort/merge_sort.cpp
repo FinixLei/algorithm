@@ -8,20 +8,18 @@
 using namespace std;
 
 template <typename T>
-print_container(T& c)
+void print_container(T& c)
 {
-    for (auto i : c) {
-        cout << i << " ";
-    }
+    for (auto i : c) cout << i << " ";
     cout << endl;
 }
 
-void do_merge(vector<int>&vec, int p, int q, int r)
+void do_merge(vector<int>&vec, int beg, int mid, int end)
 {
-    int i=p, j=q+1, k=0;
+    int i=beg, j=mid+1, k=0;
     vector<int> tmp; 
     
-    while (i<=q && j<=r) {
+    while (i <= mid && j <= end) {
         if (vec[i] < vec[j]) {
             tmp.push_back(vec[i++]);
         }
@@ -29,35 +27,40 @@ void do_merge(vector<int>&vec, int p, int q, int r)
             tmp.push_back(vec[j++]);
         }
     }
-    while (i<=q) {
+    
+    while (i <= mid) {
         tmp.push_back(vec[i++]);
     }
-    while (j<=r) {
+    while (j <= end) {
         tmp.push_back(vec[j++]);
     }
     
-    copy(tmp.begin(), tmp.end(), vec.begin()+p);
+    copy(tmp.begin(), tmp.end(), vec.begin()+beg);
 }
 
-void merge_sort(vector<int>& vec, int p, int r) 
+void merge_sort(vector<int>& vec, int beg, int end) 
 {
-    // cout << "p = " << p << ", r = " << r << endl;
-    if (p>=r) return; 
+    if (beg >= end) return; 
     
-    int q = (p+r)/2;
-    merge_sort(vec, p, q);
-    merge_sort(vec, q+1, r);
-    do_merge(vec, p, q, r);
+    int mid = (beg + end)/2;
+    merge_sort(vec, beg,   mid);
+    merge_sort(vec, mid+1, end);
+    do_merge(vec, beg, mid, end);
 }
 
 int main()
 {
-    int array[] = {98, 4, 3, 34, 24, 99};
-    vector<int> vec(array, array+sizeof(array)/sizeof(int));    
-    print_container<vector<int>>(vec); 
-    
+    vector<int> vec{98, 4, 3, 34, 24, 99};
     merge_sort(vec, 0, vec.size()-1);
-    print_container<vector<int>>(vec); 
+    print_container(vec); 
+    
+    vec = {2, 1};
+    merge_sort(vec, 0, vec.size()-1);
+    print_container(vec); 
+    
+    vec = {3, 1, 2};
+    merge_sort(vec, 0, vec.size()-1);
+    print_container(vec); 
     
     return 0;
 }
