@@ -2,45 +2,51 @@
 using namespace std;
 
 struct Node {
-    int data;
+    int data; 
     Node * next;
-    Node(int d):data(d){next = NULL;}
+    Node(int d, Node * n=nullptr) : data(d), next(n) {}
 };
 
-// way 1 - in a recursive way
+// way 1 - Recursive
 Node * reverse_linkedlist_recursively(Node * head) {
-    if (head == NULL or head->next == NULL) return head;
+    if (head == nullptr || head->next == nullptr) return head;
     
-    Node *current_next = head->next;
-    Node *final_head = reverse_linkedlist_recursively(current_next);
-    current_next->next = head;
-    head->next = NULL;
+    Node * curr = head;
+    Node * currNext = head->next; 
     
-    return final_head;
+    Node * final_head = reverse_linkedlist_recursively( currNext ); 
+    
+    currNext -> next = curr; 
+    curr -> next = nullptr; 
+    
+    return final_head; 
 }
 
-// way2 - in a non-recursive way
+// way2 - Non-Recursive
 Node * reverse_linkedlist(Node * head) {
-    if (head == NULL or head->next == NULL) return head;
+    if (head == nullptr || head->next == nullptr) return head; 
     
-    Node *p1 = head; 
-    Node *p2 = p1->next;
-    Node *p3 = p2->next;
-    head->next = NULL; 
+    Node * p1 = head;
+    Node * p2 = p1->next;
+    Node * p3 = p2->next; 
     
-    while (true) {
-        p2->next = p1; 
+    while (p3 != nullptr) {
+        p2->next = p1;  // 每次只转一个指针
         p1 = p2; 
-        p2 = p3;
-        if (p3 != NULL) p3 = p3->next; 
-        else return p1;
+        p2 = p3; 
+        p3 = p3->next;
     }
+    p2->next = p1;  // 还差一次没有转
+    head -> next = nullptr; 
+    
+    return p2;
 }
 
-void print_linkedlist(Node * head) {
-    while (head != NULL) {
-        cout << head->data << " "; 
-        head = head->next;
+void print_linkedlist(Node * head)
+{
+    while (head != nullptr) {
+        cout << head->data << " ";
+        head = head -> next;
     }
     cout << endl;
 }
@@ -48,7 +54,7 @@ void print_linkedlist(Node * head) {
 int main() {
     Node *head = new Node(1);
     Node *h = head; 
-    for (int i=2; i<=20; ++i) {  // Or, i<=2
+    for (int i=2; i<=20; ++i) {
         h->next = new Node(i);
         h = h->next; 
     }
