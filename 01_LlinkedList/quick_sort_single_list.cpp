@@ -29,13 +29,13 @@ void quick_sort_single_list(Node * beg, Node * end=nullptr)
     if (beg == nullptr || beg == end) return;
     
     int base = beg->data; 
-    Node * p1 = beg; 
-    Node * p2 = beg->next; 
+    Node * p1 = beg;            // 小节点链表的最后一个节点
+    Node * p2 = beg->next;      // 大节点链表的最后一个节点
     
     while (p2 != end) {
         if (p2->data <= base) {
             p1 = p1->next;
-            swap(p1->data, p2->data);
+            if (p1 != p2) swap(p1->data, p2->data);
         }
         p2 = p2->next;
     }
@@ -63,7 +63,7 @@ int main()
     
     print_list(&n1);
     
-    quick_sort_list(&n1);
+    quick_sort_single_list(&n1);
     print_list(&n1);
     
     return 0;
