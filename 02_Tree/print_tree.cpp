@@ -34,21 +34,22 @@
 
 */
 
+#include <stack>
+#include <set>
 #include <iostream>
 using namespace std;
 
 struct Node {
     int value;
-    Node *left;
-    Node *right; 
-    int flag;  // 0 or 1, only for 后序遍历的栈实现
-    Node(int v):value(v) {left=right=NULL; flag=0;}
+    Node * left;
+    Node * right; 
+    Node(int v, Node *l=nullptr, Node *r=nullptr):value(v), left(l), right(r) {}
 };
 
 
 void pre_order_recur(Node *head)
 {
-    if (head == NULL) return;
+    if (head == nullptr) return;
     cout << head->value << " ";
     pre_order_recur(head->left);
     pre_order_recur(head->right);
@@ -56,7 +57,7 @@ void pre_order_recur(Node *head)
 
 void mid_order_recur(Node *head)
 {
-    if (head == NULL) return;
+    if (head == nullptr) return;
     mid_order_recur(head->left);
     cout << head->value << " ";    
     mid_order_recur(head->right);
@@ -64,7 +65,7 @@ void mid_order_recur(Node *head)
 
 void post_order_recur(Node *head)
 {
-    if (head == NULL) return;
+    if (head == nullptr) return;
     post_order_recur(head->left);
     post_order_recur(head->right);
     cout << head->value << " ";
@@ -73,14 +74,14 @@ void post_order_recur(Node *head)
 struct StackNode {
     Node *node; 
     StackNode *next; 
-    StackNode(Node *n) : node(n) {next = NULL;}
+    StackNode(Node *n) : node(n) {next = nullptr;}
 };
 
-// 非递归的前序
-void pre_order_norecur(Node *head) 
+// 非递归的前序 (自定义stack)
+void pre_order_no_recur(Node *head) 
 {
     StackNode *top = new StackNode(head);
-    while(top != NULL) {
+    while(top != nullptr) {
         cout << top->node->value << " ";
         
         StackNode *old_top = top;  // pop from stack, record the old top 
@@ -100,35 +101,52 @@ void pre_order_norecur(Node *head)
     }
 }
 
-// 非递归的后序
-void post_order_norecur(Node *head) 
+// 非递归的前序 (STL stack)
+void pre_order_no_recur_with_stl_stack(Node * head)
 {
-    if (head == NULL) return; 
+    if (head == nullptr) return;
     
-    StackNode *top = new StackNode(head);
-    do {
-        StackNode *old_top = top;
-        if (old_top->node->right && old_top->node->right->flag==0) {
-            StackNode *tmp = new StackNode(old_top->node->right);
-            tmp->next = top;
-            top = tmp;
+    stack<Node *> mystack;
+    mystack.push(head);
+    
+    while (!mystack.empty()) {
+        Node * tmp = mystack.top();
+        mystack.pop();
+        if (tmp != nullptr) {
+            cout << tmp->value << " ";
+            if (tmp->right != nullptr) mystack.push(tmp->right);
+            if (tmp->left  != nullptr) mystack.push(tmp->left);
         }
-        if (old_top->node->left && old_top->node->left->flag==0) {
-            StackNode *tmp = new StackNode(old_top->node->left);
-            tmp->next = top;
-            top = tmp;
+    }
+}
+
+// 非递归的后序
+void post_order_no_recur(Node *head) 
+{
+    if (head == nullptr) return; 
+    
+    stack<Node *> mystack;
+    mystack.push(head);
+    set<Node *> donePointers;  // 记录子节点已经被压栈的节点
+    
+    auto it = donePointers.end();
+    while (!mystack.empty()) {
+        Node * tmp = mystack.top();
+        if ( tmp == nullptr ) continue;
+        
+        it = donePointers.find(tmp);
+        
+        if ( it != donePointers.end() ) {  // 若该节点的子节点已经被压栈过了，则现在可以打印该节点
+            cout << tmp->value << " ";
+            mystack.pop();
+            donePointers.erase(it);
         }
-        if ((top->node->left == NULL && top->node->right == NULL) || 
-            (top->node->left == NULL && top->node->right->flag == 1) || 
-            (top->node->right == NULL && top->node->left->flag == 1) || 
-            (top->node->left->flag == 1 && top->node->right->flag == 1)) {
-                cout << top->node->value << " ";
-                top->node->flag = 1;
-                StackNode *tmp = top;
-                top = top->next; 
-                delete tmp; 
+        else {  // 若该节点的子节点没有被压栈过，则现在不能打印该节点，而是应该将其子节点按右左的顺序压栈
+            if (tmp->right != nullptr) mystack.push(tmp->right);
+            if (tmp->left  != nullptr) mystack.push(tmp->left);
+            donePointers.insert(tmp);
         }
-    } while (top != NULL);
+    }
 }
 
 
@@ -141,7 +159,9 @@ int main()
     
     pre_order_recur(&a);  // 40 20 10 30 50 60
     cout << endl;
-    pre_order_norecur(&a);
+    pre_order_no_recur(&a);
+    cout << endl;
+    pre_order_no_recur_with_stl_stack(&a);
     cout << endl;
     
     mid_order_recur(&a);  // 10 20 30 40 50 60
@@ -149,7 +169,7 @@ int main()
     
     post_order_recur(&a);  // 10 30 20 60 50 40
     cout << endl;
-    post_order_norecur(&a);
+    post_order_no_recur(&a);
     cout << endl;
     
     return 0;
