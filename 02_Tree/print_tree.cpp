@@ -121,7 +121,7 @@ void pre_order_no_recur_with_stl_stack(Node * head)
 }
 
 // 非递归的后序
-void post_order_no_recur(Node *head) 
+void post_order_no_recur(Node * head) 
 {
     if (head == nullptr) return; 
     
@@ -132,7 +132,10 @@ void post_order_no_recur(Node *head)
     auto it = donePointers.end();
     while (!mystack.empty()) {
         Node * tmp = mystack.top();
-        if ( tmp == nullptr ) continue;
+        if ( tmp == nullptr ) {
+            mystack.pop();
+            continue;
+        }
         
         it = donePointers.find(tmp);
         
@@ -143,6 +146,38 @@ void post_order_no_recur(Node *head)
         }
         else {  // 若该节点的子节点没有被压栈过，则现在不能打印该节点，而是应该将其子节点按右左的顺序压栈
             if (tmp->right != nullptr) mystack.push(tmp->right);
+            if (tmp->left  != nullptr) mystack.push(tmp->left);
+            donePointers.insert(tmp);
+        }
+    }
+}
+
+// 非递归的中序遍历
+void mid_order_no_recur(Node * head)
+{
+    if (head == nullptr) return;
+    
+    stack<Node *> mystack;
+    mystack.push(head);
+    set<Node *> donePointers;  // 记录子节点已经被压栈的节点 
+    
+    auto it = donePointers.end();
+    
+    while ( !mystack.empty() ) {
+        Node * tmp = mystack.top();
+        mystack.pop();
+        
+        if (tmp == nullptr) continue;
+        
+        it = donePointers.find(tmp);
+        
+        if (it != donePointers.end()) {
+            cout << tmp->value << " ";
+            donePointers.erase(it);
+        }
+        else {  // 先压右节点，再压本身，再压左节点
+            if (tmp->right != nullptr) mystack.push(tmp->right);
+            mystack.push(tmp);
             if (tmp->left  != nullptr) mystack.push(tmp->left);
             donePointers.insert(tmp);
         }
@@ -162,15 +197,17 @@ int main()
     pre_order_no_recur(&a);
     cout << endl;
     pre_order_no_recur_with_stl_stack(&a);
-    cout << endl;
+    cout << "\n-----------------------------\n";
     
     mid_order_recur(&a);  // 10 20 30 40 50 60
     cout << endl;
+    mid_order_no_recur(&a);
+    cout << "\n-----------------------------\n";
     
     post_order_recur(&a);  // 10 30 20 60 50 40
     cout << endl;
     post_order_no_recur(&a);
-    cout << endl;
+    cout << "\n-----------------------------\n";
     
     return 0;
 }
