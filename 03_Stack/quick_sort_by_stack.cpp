@@ -1,56 +1,61 @@
 #include <iostream>
+#include <vector>
 #include <stack>
 using namespace std;
 
-int array[] = {324, 56, 3, 46, 46, 54, 56, 322, 59, 72, 58, 98};
-int size = sizeof(array)/sizeof(int);
-
-void print_array(int* array, int start, int end)
+template<typename T>
+void print_vec(vector<T>& vec) 
 {
-    for (int i=start; i<=end; ++i) cout << array[i] << " ";
+    for (auto v : vec) cout << v << " ";
     cout << endl;
 }
 
-void qs(int *array, int start, int end)
+void qsort_with_stack(vector<int>& vec)
 {
-    if (start >= end) return;
+    if (vec.size() <= 1) return;
     
     stack<pair<int, int>> mystack;
-    mystack.push(make_pair(start, end));
+    mystack.push(make_pair(0, vec.size()-1));
     
     while ( !mystack.empty() ) {
-        pair<int, int> top = mystack.top();
-        int front = top.first;
-        int back  = top.second;
-        int start = front;
-        int end   = back;
-
-        int t = array[front]; 
-        while(front != back) {
-            while (front < back && array[back] > t)
-                back--; 
-            if (front < back) array[front++] = array[back];
-            
-            while (front < back && array[front] <= t) 
-                front ++;
-            if (front<back) array[back--] = array[front];
-        }
-        array[front] = t;
-        
+        pair<int, int> tmp = mystack.top();
         mystack.pop();
-
-        if (start < front-1) mystack.push(make_pair(start, front-1));
-        if (front+1 < end)   mystack.push(make_pair(front+1, end));
+        int beg = tmp.first;
+        int end = tmp.second;
+        if (beg >= end) continue;
+        
+        int standard = vec[beg];
+        while (beg < end) {
+            while (beg < end && vec[end] >= standard) -- end;
+            if (beg < end) vec[beg++] = vec[end];
+            
+            while (beg < end && vec[beg] <= standard) ++ beg; 
+            if (beg < end) vec[end--] = vec[beg];
+        }
+        vec[beg] = standard;
+        
+        mystack.push(make_pair(tmp.first, beg-1));
+        mystack.push(make_pair(beg+1, tmp.second));
     }
 }
 
+
 int main()
 {
-    int size = sizeof(array)/sizeof(array[0]);
-    print_array(array, 0, size-1);
+    vector<int> vec{10, 4, 20, 16, 37, 37, 99, 8, 5, 2, 1};
+    print_vec(vec);
+    qsort_with_stack(vec);
+    print_vec(vec);
     
-    qs(array, 0, size-1);
-    print_array(array, 0, size-1);
+    vec = {2, 1};
+    print_vec(vec);
+    qsort_with_stack(vec);
+    print_vec(vec);
+    
+    vec = {3, 1, 2};
+    print_vec(vec);
+    qsort_with_stack(vec);
+    print_vec(vec);
     
     return 0;
 }
