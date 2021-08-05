@@ -22,6 +22,7 @@ It just tries to collect the typical algorithm problems.
 - 树的层次序打印
 - 三种树的遍历
 - 树的深度优先搜索
+- 寻找二叉树中2个节点的最低公共祖先节点
   
 03_栈
 
@@ -61,6 +62,7 @@ It just tries to collect the typical algorithm problems.
 │   ├── quick_sort_single_list.cpp
 │   └── reverse_linkedlist.cpp
 ├── 02_Tree
+│   ├── find_shared_ancestor.cpp
 │   ├── layer_print_tree.cpp
 │   ├── print_tree.cpp
 │   └── tree_dfs.cpp
@@ -89,6 +91,6 @@ It just tries to collect the typical algorithm problems.
 │   └── sqrt.cpp
 └── README.md
 
-10 directories, 21 files
+10 directories, 22 files
 
 ```
